@@ -20,7 +20,7 @@ func reverseList(head *ListNode) *ListNode {
 	return prv
 }
 
-func makeLinkedList(l []int) *ListNode {
+func MakeLinkedList(l []int) *ListNode {
 	if len(l) == 0 {
 		return nil
 	}
@@ -34,7 +34,7 @@ func makeLinkedList(l []int) *ListNode {
 	return sentinel.Next
 }
 
-func printLinkedList(l *ListNode) {
+func PrintLinkedList(l *ListNode) {
 	for l != nil {
 		if l.Next != nil {
 			fmt.Printf("%v->", l.Val)
@@ -47,8 +47,8 @@ func printLinkedList(l *ListNode) {
 }
 
 func Test206NormalCase1(t *testing.T) {
-	ll := makeLinkedList([]int{1, 2, 3, 4, 5})
-	printLinkedList(ll)
+	ll := MakeLinkedList([]int{1, 2, 3, 4, 5})
+	PrintLinkedList(ll)
 	res := reverseList(ll)
-	printLinkedList(res)
+	PrintLinkedList(res)
 }
