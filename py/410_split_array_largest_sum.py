@@ -1,47 +1,54 @@
 import unittest
 from typing import List
 from pprint import pprint
-import math
-
 
 class Solution:
     def splitArray(self, nums: List[int], m: int) -> int:
-        # dp[i][j] - 截止到i，分j组，的最小分(最大和)分组
-        # transfer func:
-        # dp[i][j] = min(min(dp[i-k][j-1], sum(k,j)) for k in range())
-        N = len(nums)
-        dp = [[0, ]*(m+1) for _ in range(N+1)]
-        pre_sum = [0, ]
-        for i, n in enumerate(nums):
-            pre_sum.append(pre_sum[-1]+n)
+        def check(mid):
+            accu = 0
+            cnt = 0
+            for n in nums:
+                if n > mid:
+                    return False
+                if accu+n > mid:
+                    cnt += 1
+                    accu = n
+                else:
+                    accu += n
+            if accu > 0:
+                cnt += 1
+            return cnt <= m
 
-        for i in range(1, N+1):
-            dp[i][1] = pre_sum[i]-pre_sum[0]
-            for j in range(2, min(m, i)+1):
-                dp[i][j] = min((max(dp[i-k][j-1], pre_sum[i]-pre_sum[i-k])
-                                for k in range(1, i+1) if i-k >= j-1))
-        return dp[-1][-1]
+
+        l, h = min(nums), sum(nums)
+        while l <= h:
+            mid = (l+h)>>1
+            if check(mid):
+                h = mid - 1
+            else:
+                l = mid + 1
+        return l
 
 
 class TestSolution(unittest.TestCase):
 
     def test_case_1(self):
         sol = Solution()
-        nums = [7, 2, 5, 10, 8]
+        nums = [7,2,5,10,8]
         m = 2
         expected = 18
         self.assertEqual(sol.splitArray(nums, m), expected)
-
+        
     def test_case_2(self):
         sol = Solution()
-        nums = [1, 2, 3, 4, 5]
+        nums = [1,2,3,4,5]
         m = 2
         expected = 9
         self.assertEqual(sol.splitArray(nums, m), expected)
 
     def test_case_3(self):
         sol = Solution()
-        nums = [1, 4, 4]
+        nums = [1,4,4]
         m = 3
         expected = 4
         self.assertEqual(sol.splitArray(nums, m), expected)
