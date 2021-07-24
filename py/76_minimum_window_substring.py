@@ -2,6 +2,7 @@ import unittest
 from typing import List
 from pprint import pprint
 from collections import Counter, deque, defaultdict
+import math
 
 
 class Solution:
@@ -10,28 +11,47 @@ class Solution:
         if m < n:
             return ""
 
+        needs, missing = Counter(t), len(t)
+        i, I, J = 0, 0, 0
+        for j, ch in enumerate(s, 1):
+            missing -= needs[ch] > 0
+            needs[ch] -= 1
+            if not missing:
+                while i < j and needs[s[i]] < 0:
+                    needs[s[i]] += 1
+                    i += 1
+                if J == 0 or j-i < J-I:
+                    I,J = i,j
+
+        return s[I:J]
+
+
+    def minWindow1(self, s: str, t: str) -> str:
+        m, n = len(s), len(t)
+        if m < n:
+            return ""
+
         win = deque()
         win_counter = defaultdict(int)
         t_counter = Counter(t)
         t_counter2 = Counter(t)
-        res = s+" "
+        l, r = 0, m
 
-        for ch in s:
-            win.append(ch)
-            win_counter[ch] += 1
+        for i, ch in enumerate(s):
             if ch in t_counter:
+                win.append((i, ch))
+                win_counter[ch] += 1
                 if ch in t_counter2:
                     t_counter2[ch] -= 1
                     if t_counter2[ch] == 0:
                         t_counter2.pop(ch)
-                while win and ((win[0] in t_counter and win_counter[win[0]] > t_counter[win[0]])
-                               or (win[0] not in t_counter)):
-                    win_counter[win.popleft()] -= 1
+                while win and (win[0][1] in t_counter and win_counter[win[0][1]] > t_counter[win[0][1]]):
+                    win_counter[win.popleft()[1]] -= 1
 
-            if not t_counter2 and len(win) < len(res):
-                res = "".join(win)
+            if not t_counter2 and (win[-1][0]-win[0][0] < (r-l)):
+                r, l = win[-1][0], win[0][0]
 
-        return "" if len(res) > m else res
+        return "" if r-l == m else s[l:r+1]
 
 
 class TestSolution(unittest.TestCase):
