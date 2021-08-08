@@ -28,7 +28,7 @@ class Solution:
                             word_list.discard(trans_word)
                             new_front.add(trans_word)
             front = new_front
-            if len(front) < len(back):
+            if len(front) > len(back):
                 front, back = back, front
         return 0
 

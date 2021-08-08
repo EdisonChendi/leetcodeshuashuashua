@@ -40,7 +40,7 @@ func ladderLength(beginWord string, endWord string, wordList []string) int {
 			}
 		}
 		front = newFront
-		if len(front) < len(back) {
+		if len(front) > len(back) {
 			front, back = back, front
 		}
 	}
