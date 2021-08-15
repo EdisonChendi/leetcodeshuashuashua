@@ -27,9 +27,11 @@ class UnionFind:
     def union(self, i, j):
         root_i = self.find_root(i)
         root_j = self.find_root(j)
-        if root_i != root_j:
-            self.parent[root_j] = root_i
-            self.count -= 1
+        if root_i == root_j:
+            return False
+        self.parent[root_j] = root_i
+        self.count -= 1
+        return True
 
     def connected(self, i, j):
         return self.find_root(i) == self.find_root(j)
