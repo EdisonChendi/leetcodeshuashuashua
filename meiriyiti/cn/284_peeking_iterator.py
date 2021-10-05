@@ -98,7 +98,7 @@ class PeekingIterator2:
         return self.cur_ele != None
 
 
-class PeekingIterator:
+class PeekingIterator3:
     """
     Google Guawa Implementation:
     https://github.com/google/guava/blob/703ef758b8621cfbab16814f01ddcc5324bdea33/guava-gwt/src-super/com/google/common/collect/super/com/google/common/collect/Iterators.java#L1125
@@ -147,6 +147,44 @@ class PeekingIterator:
 # while iter.hasNext():
 #     val = iter.peek()   # Get the next element but not advance the iterator.
 #     iter.next()         # Should return the same value as [val].
+
+
+class PeekingIterator:
+    """
+    by caching one element
+    """
+
+    def __init__(self, iterator):
+        """
+        Initialize your data structure here.
+        :type iterator: Iterator
+        """
+        self.iterator = iterator
+        self._has_next = False
+        self._next = None
+        self.next()
+
+    def peek(self):
+        """
+        Returns the next element in the iteration without advancing the iterator.
+        :rtype: int
+        """
+        return self._next
+
+    def next(self):
+        """
+        :rtype: int
+        """
+        ret = self._next
+        self._has_next = self.iterator.hasNext()
+        self._next = self.iterator.next() if self._has_next else None
+        return ret
+
+    def hasNext(self):
+        """
+        :rtype: bool
+        """
+        return self._has_next
 
 
 class TestSolution(unittest.TestCase):
