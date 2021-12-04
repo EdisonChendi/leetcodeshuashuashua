@@ -2,6 +2,11 @@ import unittest
 from typing import List
 from pprint import pprint
 
+'''
+* 线性dp
+* dp[i]所有之前的dp值
+'''
+
 
 class Solution:
     def lengthOfLIS(self, nums: List[int]) -> int:
