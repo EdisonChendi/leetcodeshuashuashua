@@ -14,23 +14,14 @@ class TreeNode:
 
 class Solution:
     def isEvenOddTree(self, root: TreeNode) -> bool:
-        preds = {
-            0: {
-                "cmp": lambda a, b: a < b,
-                "parity": lambda a: a % 2 == 1
-            },
-            1: {
-                "cmp": lambda a, b: a > b,
-                "parity": lambda a: a % 2 == 0
-            }
-        }
+        preds = ((lambda a, b: a < b, lambda a: a % 2 == 1),
+                 (lambda a, b: a > b, lambda a: a % 2 == 0))
         # BFS
         level = 0
         q = collections.deque([root, ])
         while q:
             new_q = collections.deque()
-            cmp = preds[level % 2]["cmp"]
-            parity = preds[level % 2]["parity"]
+            cmp, parity = preds[level % 2]
             while q:
                 node = q.popleft()
                 if not parity(node.val):
