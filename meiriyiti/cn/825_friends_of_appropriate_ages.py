@@ -4,7 +4,7 @@ from pprint import pprint
 import bisect
 
 
-class Solution:
+class Solution1:
     def numFriendRequests(self, ages: List[int]) -> int:
         ages.sort()
         N = len(ages)
@@ -23,6 +23,20 @@ class Solution:
                 prev_v = x
                 prev_cnt = cnt
                 res += cnt
+        return res
+
+class Solution:
+    def numFriendRequests(self, ages: List[int]) -> int:
+        pre_sums = [0]*121
+        for age in ages:
+            pre_sums[age] += 1
+        for i in range(1, 121):
+            pre_sums[i] += pre_sums[i-1]
+        res = 0
+        for age in ages:
+            lower_bound = int(0.5*age)+8
+            if lower_bound <= age:
+                res += pre_sums[age] - pre_sums[lower_bound-1] - 1
         return res
 
 
