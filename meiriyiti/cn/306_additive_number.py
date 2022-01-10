@@ -21,7 +21,7 @@ class Solution:
                 res.append(str(carry))
             return ''.join(reversed(res))
 
-        def backtrack(p1, p2, num):
+        def valid(p1, p2, num):
             if not num:
                 return True
 
@@ -30,15 +30,8 @@ class Solution:
                 return False
 
             s = add(p1, p2)
-            ni = num[:i]
-            if len(ni) > 1 and ni[0] == '0':
-                return False
-            if len(s) == len(ni):
-                if ni == s:
-                    return backtrack(p2, ni, num[i:])
-            elif len(num) > i:
-                ni = num[:i+1]
-                return ni[0] != '0' and ni == s and backtrack(p2, ni, num[i+1:])
+            if num.startswith(s):
+                return valid(p2, s, num[len(s):])
             return False
 
         N = len(num)
@@ -52,18 +45,18 @@ class Solution:
                 p2 = num[i:j+1]
                 if len(p2) > 1 and p2[0] == '0':
                     break
-                if backtrack(p1, p2, num[j+1:]):
+                if valid(p1, p2, num[j+1:]):
                     return True
         return False
 
 
 class TestSolution(unittest.TestCase):
 
-    # def test_case_1(self):
-    #     sol = Solution()
-    #     num = "112358"
-    #     expected = True
-    #     self.assertEqual(sol.isAdditiveNumber(num), expected)
+    def test_case_1(self):
+        sol = Solution()
+        num = "112358"
+        expected = True
+        self.assertEqual(sol.isAdditiveNumber(num), expected)
 
     def test_case_2(self):
         sol = Solution()
@@ -71,17 +64,17 @@ class TestSolution(unittest.TestCase):
         expected = True
         self.assertEqual(sol.isAdditiveNumber(num), expected)
 
-    # def test_case_3(self):
-    #     sol = Solution()
-    #     num = "113"
-    #     expected = False
-    #     self.assertEqual(sol.isAdditiveNumber(num), expected)
+    def test_case_3(self):
+        sol = Solution()
+        num = "113"
+        expected = False
+        self.assertEqual(sol.isAdditiveNumber(num), expected)
 
-    # def test_case_4(self):
-    #     sol = Solution()
-    #     num = "198019823962"
-    #     expected = True
-    #     self.assertEqual(sol.isAdditiveNumber(num), expected)
+    def test_case_4(self):
+        sol = Solution()
+        num = "198019823962"
+        expected = True
+        self.assertEqual(sol.isAdditiveNumber(num), expected)
 
     # def test_edge_case_1(self):
     #     sol = Solution()
