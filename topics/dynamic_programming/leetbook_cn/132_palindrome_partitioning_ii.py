@@ -8,36 +8,30 @@ class Solution:
         # dp[i][j] = min(dp[i][k]+dp[k+1][j]) for k in range(i,j)
         cache = {}
 
-        def palindrome(s):
-            # needs some 
-            if s in cache:
-                return cache[s]
+        def palindrome(i,j):
+            if (i,j) in cache:
+                return cache[(i,j)]
+            if i >= j:
+                return True
+            if s[i] == s[j]:
+                res = palindrome(i+1,j-1)
+            else:
+                res = False
+            cache[(i,j)] = res
+            return res
 
-            i, j = 0, len(s)-1
-            while i < j:
-                if s[i] != s[j]:
-                    cache[s] = False
-                    return False
-                i += 1
-                j -= 1
-
-            cache[s] = True
-            return True
 
         L = len(s)
-        dp = [[0]*L for _ in range(L)]
-        for i in reversed(range(L)):
-            for j in range(i+1, L):
-                dp[i][j] = j-i
-                if palindrome(s[i:j+1]):
-                    dp[i][j] = 0
-                    continue
-                for k in range(i, j):
-                    if palindrome(s[k+1:j+1]):
-                        dp[i][j] = min(dp[i][j], dp[i][k]+1)
-                    else:
-                        dp[i][j] = min(dp[i][j], 1+dp[i][k]+dp[k+1][j])
-        return dp[0][-1]
+        dp = [0,]*L
+
+        for j in range(L):
+            if palindrome(0,j):
+                dp[j] = 0
+            else:
+                dp[j] = min(1+dp[i-1] for i in range(1,j+1) if palindrome(i,j))
+            
+        
+        return dp[-1]
 
 
 class TestSolution(unittest.TestCase):
