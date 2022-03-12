@@ -35,7 +35,7 @@ class Solution1:
         return res
 
 
-class Solution:
+class Solution2:
     def maximumSwap(self, num: int) -> int:
         arr = []
         temp = num
@@ -66,13 +66,34 @@ class Solution:
         return num
 
 
+class Solution:
+    def maximumSwap(self, num: int) -> int:
+        max_val = -1
+        m = l = r = -1
+        arr = []
+        i = 0
+        while num > 0:
+            num, rem = divmod(num, 10)
+            arr.append(rem)
+
+            if rem > max_val:
+                max_val, m = rem, i
+                m = i
+            elif rem < max_val:
+                l, r = i, m
+            i += 1
+
+        arr[l], arr[r] = arr[r], arr[l]
+        return sum(n*10**i for i, n in enumerate(arr))
+
+
 class TestSolution(unittest.TestCase):
 
-    # def test_case_1(self):
-    #     sol = Solution()
-    #     num = 2736
-    #     expected = 7236
-    #     self.assertEqual(sol.maximumSwap(num), expected)
+    def test_case_1(self):
+        sol = Solution()
+        num = 2736
+        expected = 7236
+        self.assertEqual(sol.maximumSwap(num), expected)
 
     def test_case_2(self):
         sol = Solution()
