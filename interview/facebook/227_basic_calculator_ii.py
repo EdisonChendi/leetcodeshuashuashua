@@ -46,7 +46,7 @@ class Tokenizer:
         return int(''.join(num))
 
 
-class Solution:
+class Solution1:
     def calculate(self, s: str) -> int:
 
         def parse(prec):
@@ -68,6 +68,30 @@ class Solution:
 
         tok = Tokenizer(s.strip())
         return parse(0)
+
+
+class Solution:
+    def calculate(self, s: str) -> int:
+        stack = []
+        num = 0
+        N = len(s)
+        pre_op = "+"
+        ord0 = ord('0')
+        for i in range(N):
+            if s[i].isdigit():
+                num = num*10+ord(s[i])-ord0
+            if i == N-1 or s[i] in "+-*/":
+                if pre_op == "+":
+                    stack.append(num)
+                elif pre_op == '-':
+                    stack.append(-num)
+                elif pre_op == "*":
+                    stack.append(stack.pop()*num)
+                elif pre_op == "/":
+                    stack.append(int(stack.pop()/num))
+                num = 0
+                pre_op = s[i]
+        return sum(stack)
 
 
 class TestSolution(unittest.TestCase):
@@ -106,6 +130,12 @@ class TestSolution(unittest.TestCase):
         sol = Solution()
         s = "1*2-3/4+5*6-7*8+9/10"
         expected = -24
+        self.assertEqual(sol.calculate(s), expected)
+
+    def test_case_6(self):
+        sol = Solution()
+        s = " 3/2 "
+        expected = 1
         self.assertEqual(sol.calculate(s), expected)
 
     # def test_edge_case_1(self):
