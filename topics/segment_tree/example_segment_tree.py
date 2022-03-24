@@ -8,6 +8,7 @@ class RangeSumSegmentTree:
     def __init__(self, arr) -> None:
         self._arr = arr
         self.tree = [0]*(4*len(self._arr))
+        self.lazy = [0]*(4*len(self._arr))
         self.build()
 
     def build(self):
@@ -25,24 +26,37 @@ class RangeSumSegmentTree:
 
         _build(0, 0, len(self._arr)-1)
 
-    def update(self, arr_index, val):
+    def add(self, arr_index, val):
+        self.range_add(arr_index, arr_index, val)
 
-        def _update(val, tree_index, lo, hi, arr_index):
-            if lo == hi:
-                self._arr[arr_index] = val
-                self.tree[tree_index] = val
+    def _lazy(self, tree_index, tree_lo, tree_hi, val):
+        self.tree[tree_index] += (tree_hi-tree_lo+1)*val
+        self.lazy[tree_index] += val
+
+    def _push_down(self, tree_index, tree_lo, tree_hi):
+        if self.lazy[tree_index] == 0:
+            return
+        mid = (tree_lo+tree_hi) >> 1
+        self._lazy(2*tree_index+1, tree_lo, mid, self.lazy[tree_index])
+        self._lazy(2*tree_index+2, mid+1, tree_hi, self.lazy[tree_index])
+        self.lazy[tree_index] = 0
+
+    def range_add(self, arr_lo, arr_hi, val):
+        def _range_add(tree_index, tree_lo, tree_hi, arr_lo, arr_hi, val):
+            if arr_hi < tree_lo or arr_lo > tree_hi:
                 return
 
-            mid = (lo+hi) >> 1
-            if arr_index <= mid:
-                _update(val, 2*tree_index+1, lo, mid, arr_index)
+            self._push_down(tree_index, tree_lo, tree_hi)
+            if arr_lo <= tree_lo <= tree_hi <= arr_hi:
+                self._lazy(tree_index, tree_lo, tree_hi, val)
             else:
-                _update(val, 2*tree_index+2, mid+1, hi, arr_index)
+                mid = (tree_lo+tree_hi) >> 1
+                _range_add(2*tree_index+1, tree_lo, mid, arr_lo, arr_hi, val)
+                _range_add(2*tree_index+2, mid+1, tree_hi, arr_lo, arr_hi, val)
+                self.tree[tree_index] = self.tree[2*tree_index+1] + \
+                    self.tree[2*tree_index+2]
 
-            self.tree[tree_index] = self.tree[tree_index*2+1] + \
-                self.tree[tree_index*2+2]
-
-        _update(val, 0, 0, len(self._arr)-1, arr_index)
+        _range_add(0, 0, len(self._arr)-1, arr_lo, arr_hi, val)
 
     def query(self, arr_lo, arr_hi):
         # hi - inclusive
@@ -50,16 +64,25 @@ class RangeSumSegmentTree:
             if arr_hi < tree_lo or arr_lo > tree_hi:
                 return
 
+            self._push_down(tree_index, tree_lo, tree_hi)
             if arr_lo <= tree_lo <= tree_hi <= arr_hi:
+                print(0, tree_index, self.tree[tree_index])
                 return self.tree[tree_index]
 
             mid = (tree_lo+tree_hi) >> 1
             if arr_lo > mid:
-                return _query(2*tree_index+2, mid+1, tree_hi, arr_lo, arr_hi)
+                res = _query(2*tree_index+2, mid+1, tree_hi, arr_lo, arr_hi)
+                print(1, tree_index, res)
+                return res
             elif arr_hi <= mid:
-                return _query(2*tree_index+1, tree_lo, mid, arr_lo, arr_hi)
+                res = _query(2*tree_index+1, tree_lo, mid, arr_lo, arr_hi)
+                print(2, tree_index, res)
+                return res
             else:
-                return _query(2*tree_index+2, mid+1, tree_hi, arr_lo, arr_hi) + _query(2*tree_index+1, tree_lo, mid, arr_lo, arr_hi)
+                res = _query(2*tree_index+2, mid+1, tree_hi, arr_lo, arr_hi) + \
+                    _query(2*tree_index+1, tree_lo, mid, arr_lo, arr_hi)
+                print(3, tree_index, res)
+                return res
 
         return _query(0, 0, len(self._arr)-1, arr_lo, arr_hi)
 
@@ -69,11 +92,29 @@ class TestSolution(unittest.TestCase):
     def test_case_1(self):
         arr = [18, 17, 13, 19, 15, 11, 20, 12, 33, 25]
         range_sum = RangeSumSegmentTree(arr)
-        self.assertEqual(range_sum.query(2, 8), 123)
-        range_sum.update(3, 25)
-        self.assertEqual(range_sum.query(2, 8), 129)
-        range_sum.update(1, 100)
-        self.assertEqual(range_sum.query(2, 8), 129)
+        # print(range_sum.lazy)
+        # print(range_sum.tree)
+        # print('-'*10)
+        # self.assertEqual(range_sum.query(2, 8), 123)
+        # range_sum.add(3, 6)
+        print(range_sum.lazy)
+        print(range_sum.tree)
+        print('-'*10)
+        # self.assertEqual(range_sum.query(2, 8), 129)
+        range_sum.range_add(0, 9, 5)
+        print(range_sum.tree)
+        print(range_sum.lazy)
+        # self.assertEqual(range_sum.query(2, 8), 164)
+        print('-'*10)
+        range_sum.range_add(0, 9, 5)
+        print(range_sum.tree)
+        print(range_sum.lazy)
+        print('-'*10)
+        # self.assertEqual(range_sum.query(2, 8), 199)
+        print(range_sum.query(2, 8), 193)
+        print(range_sum.tree)
+        print(range_sum.lazy)
+        print('-'*10)
 
     # def test_edge_case_1(self):
     #     sol = Solution()
