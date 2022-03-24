@@ -2,7 +2,8 @@ import unittest
 from typing import List
 from pprint import pprint
 import copy
-class Solution:
+
+class Solution1:
     def canPartition(self, nums: List[int]) -> bool:
         SUM = sum(nums)
         if SUM % 2 != 0:
@@ -14,10 +15,27 @@ class Solution:
             for v in copy.copy(dp):
                 if n+v == half: return True
                 dp.add(n+v)
+                dp.add(n+v)
+                if n+v < half: dp.add(n+v)
             if n == half: return True
             dp.add(n)
         return False
 
+class Solution:
+    def canPartition(self, nums: List[int]) -> bool:
+        SUM = sum(nums)
+        if SUM % 2 != 0:
+            return False
+
+        half = SUM //2
+        dp = [False]*(half+1)
+        dp[0] = True
+        for n in nums:
+            for target in reversed(range(n,half+1,1)):
+                dp[target] = dp[target] or dp[target-n]
+            if dp[-1] == True:
+                return True
+        return False
 
 class TestSolution(unittest.TestCase):
 
