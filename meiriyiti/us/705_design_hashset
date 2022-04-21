@@ -20,9 +20,8 @@ class MyHashSet:
             self.arr[idx].append(key)
 
     def remove(self, key: int) -> None:
-        if not self.contains(key):
-            return
-        self.arr[key % self.size].remove(key)
+        if self.contains(key):
+            self.arr[key % self.size].remove(key)
 
     def contains(self, key: int) -> bool:
         """
