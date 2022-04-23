@@ -23,12 +23,11 @@ class TreeNode:
 #         cur = cur.right
 
 
-class BSTIterator:
+class BSTIterator1:
 
     def __init__(self, root: Optional[TreeNode]):
         self.cur = root
         self.stack = []
-        pass
 
     def next(self) -> int:
         while self.cur:
@@ -40,6 +39,27 @@ class BSTIterator:
 
     def hasNext(self) -> bool:
         return bool(self.cur or self.stack)
+
+
+class BSTIterator:
+
+    def __init__(self, root: Optional[TreeNode]):
+        self.stack = []
+        node = root
+        while node:
+            self.stack.append(node)
+            node = node.left
+
+    def next(self) -> int:
+        cur = self.stack.pop()
+        node = cur.right
+        while node:
+            self.stack.append(node)
+            node = node.left
+        return cur.val
+
+    def hasNext(self) -> bool:
+        return bool(self.stack)
 
 
 class TestSolution(unittest.TestCase):
