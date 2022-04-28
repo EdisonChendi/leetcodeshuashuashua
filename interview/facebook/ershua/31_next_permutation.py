@@ -28,7 +28,7 @@ class Solution1:
             nums[:] = arr[:]
 
 
-class Solution:
+class Solution2:
     def nextPermutation(self, nums: List[int]) -> None:
         i = len(nums)-1
         while i > 0 and nums[i-1] >= nums[i]:
@@ -43,6 +43,29 @@ class Solution:
             j += 1
         nums[i], nums[j] = nums[j], nums[i]
         nums[i+1:] = reversed(nums[i+1:])
+        
+class Solution:
+    def nextPermutation(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        if len(nums) <= 1:
+            return nums
+        
+        i = len(nums)-2
+        while i >= 0 and nums[i] >= nums[i+1]:
+            i -= 1
+        
+        if i < 0:
+            nums[:] = nums[::-1]
+        else:
+            ni = nums[i]
+            j = i
+            while j < len(nums)-1 and nums[j+1] > ni:
+                j += 1
+            nums[i], nums[j] = nums[j], nums[i]
+            nums[i+1:] = nums[i+1:][::-1]
+
 
 
 class TestSolution(unittest.TestCase):
